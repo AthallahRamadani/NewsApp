@@ -10,30 +10,20 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:backgroundTint="@color/white"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/top_app_bar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            app:navigationIcon="@drawable/baseline_home_24"
+            app:title="News"
+            app:titleTextAppearance="@style/ToolbarTitleStyle" />
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/mandiri_logo" />
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/top_app_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:title="Mandiri News"
-                app:titleTextAppearance="@style/ToolbarTitleStyle" />
-        </LinearLayout>
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divider_top"
@@ -48,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/latest_news"
+        android:text="@string/top_headline"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"

@@ -25,7 +25,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity(), HeadlineAdapter.HeadlineItemClickListener {
 
-
     private lateinit var binding: ActivityMainBinding
     private lateinit var headlineAdapter: HeadlineAdapter
     private lateinit var everythingPagingAdapter: EverythingAdapterPaging
@@ -64,6 +63,7 @@ class MainActivity : AppCompatActivity(), HeadlineAdapter.HeadlineItemClickListe
                                 headlineAdapter.updateDataHeadline(newsData)
                             }
                         }
+
                         is ResultState.Error -> showError()
                     }
                 }
@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity(), HeadlineAdapter.HeadlineItemClickListe
     private fun observeEverything() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getEverythingPagingData().collectLatest { pagingData->
+                viewModel.getEverythingPagingData().collectLatest { pagingData ->
                     everythingPagingAdapter.submitData(pagingData)
                 }
             }
@@ -86,16 +86,21 @@ class MainActivity : AppCompatActivity(), HeadlineAdapter.HeadlineItemClickListe
         binding.rvLatestNews.isVisible = false
         binding.rvAllNews.isVisible = false
     }
+
     private fun showLoading(isLoading: Boolean) {
         binding.cpiHeadline.isVisible = isLoading
         binding.rvLatestNews.isVisible = !isLoading
     }
+
     private fun setupRecyclerView() {
         headlineAdapter = HeadlineAdapter(emptyList(), this)
+
         everythingPagingAdapter = EverythingAdapterPaging { articlesItemEverything ->
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(articlesItemEverything.url))
+            val intent = Intent(this, WebViewActivity::class.java)
+            intent.putExtra("url", articlesItemEverything.url)
             startActivity(intent)
         }
+
         binding.rvLatestNews.apply {
             adapter = headlineAdapter
             layoutManager =
@@ -105,11 +110,13 @@ class MainActivity : AppCompatActivity(), HeadlineAdapter.HeadlineItemClickListe
             val pagerSnapHelper = PagerSnapHelper()
             pagerSnapHelper.attachToRecyclerView(this)
         }
+
         binding.rvAllNews.apply {
             adapter = everythingPagingAdapter
             layoutManager =
                 LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
         }
+
         binding.rvAllNews.adapter =
             everythingPagingAdapter.withLoadStateFooter(loadingAdapter)
     }
@@ -149,7 +156,8 @@ class MainActivity : AppCompatActivity(), HeadlineAdapter.HeadlineItemClickListe
     }
 
     override fun onHeadlineItemCLick(article: ArticlesItem) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(article.url))
+        val intent = Intent(this, WebViewActivity::class.java)
+        intent.putExtra("url", article.url)
         startActivity(intent)
     }
 }
