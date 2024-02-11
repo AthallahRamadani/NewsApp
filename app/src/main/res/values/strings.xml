@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">NewsApp</string>
+    <string name="latest_news">Latest News</string>
+    <string name="news_images">news_images</string>
+    <string name="business">Business</string>
+    <string name="entertainment">Entertainment</string>
+    <string name="general">General</string>
+    <string name="health">Health</string>
+    <string name="science">Science</string>
+    <string name="sports">Sports</string>
+    <string name="technology">Technology</string>
+    <string name="this_is_imageview_reset">This is ImageView Reset</string>
+    <string name="all_news">All News</string>
+    <string name="this_is_iv_all_news">This is iv all news</string>
+</resources>
