@@ -41,7 +41,7 @@ class NewsRepositoryImpl(
         return Pager(
             config = PagingConfig(pageSize = 10, prefetchDistance = 1, initialLoadSize = 10),
             pagingSourceFactory = {
-                NewsPagingSource(apiService, query = "The")
+                NewsPagingSource(apiService, query = "a")
             },
         ).flow.map {
             it.map { articlesItemEverything ->

@@ -25,6 +25,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity(), HeadlineAdapter.HeadlineItemClickListener {
 
+
     private lateinit var binding: ActivityMainBinding
     private lateinit var headlineAdapter: HeadlineAdapter
     private lateinit var everythingPagingAdapter: EverythingAdapterPaging
@@ -40,13 +41,6 @@ class MainActivity : AppCompatActivity(), HeadlineAdapter.HeadlineItemClickListe
         observeEverything()
         observeHeadline()
         setupChipGroup()
-
-        viewModel.startAutoUpdate()
-    }
-
-    override fun onDestroy() {
-        viewModel.stopAutoUpdate()
-        super.onDestroy()
     }
 
     private fun observeHeadline() {

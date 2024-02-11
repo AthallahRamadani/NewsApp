@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class MainViewModel(
@@ -33,19 +34,9 @@ class MainViewModel(
             }
         }
     }
+
+
     fun getEverythingPagingData(): Flow<PagingData<ArticlesItemEverything>> {
         return newsRepository.getEverythingPaging(pageNumber)
-    }
-
-    fun startAutoUpdate() {
-        viewModelScope.launch {
-            while (isAutoUpdateEnabled) {
-                delay(1800000)
-                getHeadline()
-            }
-        }
-    }
-    fun stopAutoUpdate() {
-        isAutoUpdateEnabled = false
     }
 }
