@@ -3,7 +3,6 @@ package com.athallah.newsapp.data.datasource.remote.api.service
 import com.athallah.core.BuildConfig
 import com.athallah.newsapp.data.datasource.remote.api.response.EverythingResponse
 import com.athallah.newsapp.data.datasource.remote.api.response.HeadlineResponse
-import com.athallah.newsapp.data.model.News
 import com.athallah.newsapp.data.utils.Constant.Companion.API_KEY
 import retrofit2.Response
 import retrofit2.http.GET
@@ -14,7 +13,7 @@ interface ApiService {
     suspend fun getTopHeadlines(
         @Query("country") country: String,
         @Query("category") category: String? = null,
-        @Query("apiKey") apiKey: String = BuildConfig.API_KEY
+        @Query("apiKey") apiKey: String = API_KEY
     ): Response<HeadlineResponse>
 
     @GET("v2/everything")
