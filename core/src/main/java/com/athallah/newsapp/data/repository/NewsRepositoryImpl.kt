@@ -37,11 +37,11 @@ class NewsRepositoryImpl(
         }
     }
 
-    override fun getEverythingPaging(pageNumber: Int): Flow<PagingData<ArticlesItemEverything>> {
+    override fun getEverythingPaging(pageNumber: Int, query: String): Flow<PagingData<ArticlesItemEverything>> {
         return Pager(
             config = PagingConfig(pageSize = 10, prefetchDistance = 1, initialLoadSize = 10),
             pagingSourceFactory = {
-                NewsPagingSource(apiService, query = "a")
+                NewsPagingSource(apiService, query)
             },
         ).flow.map {
             it.map { articlesItemEverything ->

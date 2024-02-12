@@ -12,4 +12,5 @@
     <string name="this_is_imageview_reset">This is ImageView Reset</string>
     <string name="all_news">All News</string>
     <string name="this_is_iv_all_news">This is iv all news</string>
+    <string name="search">Search</string>
 </resources>

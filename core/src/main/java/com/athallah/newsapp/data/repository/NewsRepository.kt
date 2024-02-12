@@ -9,5 +9,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface NewsRepository {
     fun getHeadline(country: String, category: String?): Flow<ResultState<List<ArticlesItem>>>
-    fun getEverythingPaging(pageNumber: Int): Flow<PagingData<ArticlesItemEverything>>
+    fun getEverythingPaging(pageNumber: Int, query: String): Flow<PagingData<ArticlesItemEverything>>
 }

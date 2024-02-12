@@ -25,7 +25,7 @@ class MainViewModel(
     private var country = "us"
     var category : String? = null
     private var pageNumber = 1
-    private var isAutoUpdateEnabled = false
+    var searchQuery = "A"
 
     fun getHeadline() {
         viewModelScope.launch {
@@ -37,6 +37,6 @@ class MainViewModel(
 
 
     fun getEverythingPagingData(): Flow<PagingData<ArticlesItemEverything>> {
-        return newsRepository.getEverythingPaging(pageNumber)
+        return newsRepository.getEverythingPaging(pageNumber, searchQuery)
     }
 }

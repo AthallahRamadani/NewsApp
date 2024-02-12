@@ -1,9 +1,9 @@
 package com.athallah.newsapp
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
@@ -37,10 +37,13 @@ class MainActivity : AppCompatActivity(), HeadlineAdapter.HeadlineItemClickListe
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupRecyclerView()
         observeEverything()
         observeHeadline()
+        setupRecyclerView()
         setupChipGroup()
+        setupSearch()
+
+
     }
 
     private fun observeHeadline() {
@@ -143,11 +146,28 @@ class MainActivity : AppCompatActivity(), HeadlineAdapter.HeadlineItemClickListe
             }
             // Reset category
             viewModel.category = null
-            binding.ivReset.visibility = View.GONE
+            binding.ivReset.visibility = View.INVISIBLE
             viewModel.getHeadline()
             binding.rvLatestNews.scrollToPosition(0)
         }
     }
+
+    private fun setupSearch() {
+        binding.etSearch.setOnEditorActionListener{ _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH){
+                performSearch()
+                return@setOnEditorActionListener true
+            }
+            false
+        }
+    }
+
+    private fun performSearch() {
+        val searchQuery = binding.etSearch.text.toString().trim()
+        viewModel.searchQuery = searchQuery
+        observeEverything()
+    }
+
 
     override fun onHeadlineItemCLick(article: ArticlesItem) {
         val intent = Intent(this, WebViewActivity::class.java)
