@@ -92,5 +92,8 @@ dependencies {
     //coil photo online loader
     implementation("io.coil-kt:coil:2.5.0")
 
+    //shimmer
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
+
 
 }

@@ -31,6 +31,7 @@ class MainViewModel(
         viewModelScope.launch {
             newsRepository.getHeadline(country, category).collect {
                 _headlineState.value = it
+                delay(500)
             }
         }
     }
