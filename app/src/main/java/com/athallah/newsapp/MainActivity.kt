@@ -47,12 +47,11 @@ class MainActivity : AppCompatActivity(), HeadlineAdapter.HeadlineItemClickListe
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        observeEverything()
         observeHeadline()
+        observeEverything()
         setupRecyclerView()
         setupChipGroup()
         setupSearch()
-
 
     }
 
