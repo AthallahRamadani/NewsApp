@@ -21,10 +21,9 @@ import com.athallah.newsapp.data.ResultState
 import com.athallah.newsapp.data.model.ArticlesItem
 import com.athallah.newsapp.databinding.ActivityMainBinding
 import com.google.android.material.chip.Chip
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.IOException
 
 
 class MainActivity : AppCompatActivity(), HeadlineAdapter.HeadlineItemClickListener {
@@ -66,9 +65,15 @@ class MainActivity : AppCompatActivity(), HeadlineAdapter.HeadlineItemClickListe
                             val newsData = result.data
                             if (newsData != null) {
                                 headlineAdapter.updateDataHeadline(newsData)
+                                binding.layoutHeadlineError.isVisible = false
+                                binding.rvLatestNews.isVisible = true
+                            } else {
+                                binding.layoutHeadlineError.isVisible = true
+                                binding.rvLatestNews.isVisible = false
                             }
                         }
-                        is ResultState.Error -> showError()
+
+                        is ResultState.Error -> showError(result.e)
                     }
                 }
             }
@@ -76,15 +81,27 @@ class MainActivity : AppCompatActivity(), HeadlineAdapter.HeadlineItemClickListe
         viewModel.getHeadline()
     }
 
-    private fun showError() {
-        binding.rvLatestNews.isVisible = false
-        binding.rvAllNews.isVisible = false
+    private fun showError(error: Throwable){
+        when (error) {
+            is IOException -> {
+                binding.layoutHeadlineError.isVisible = true
+                binding.rvLatestNews.isVisible = false
+                binding.tvHeadlineError.text = getString(R.string.connection_error)
+            }
+
+            else -> {
+                binding.layoutHeadlineError.isVisible = true
+                binding.rvLatestNews.isVisible = false
+                binding.tvHeadlineError.text = getString(R.string.server_error)
+            }
+        }
     }
 
     private fun showLoading(isLoading: Boolean) {
-        with(binding){
+        with(binding) {
             includeHeadlineLoading.loadingShimmerHeadline.isVisible = isLoading
             rvLatestNews.isVisible = !isLoading
+            layoutHeadlineError.isVisible = !isLoading
 
             if (isLoading) {
                 includeHeadlineLoading.loadingShimmerHeadline.startShimmer()
@@ -94,12 +111,8 @@ class MainActivity : AppCompatActivity(), HeadlineAdapter.HeadlineItemClickListe
         }
     }
 
+
     private fun observeEverything() {
-        everythingPagingAdapter.addLoadStateListener { loadState ->
-            val state = loadState.refresh
-            showShimmerEverythingLoading(state is LoadState.Loading)
-//            if (state is LoadState.Error) showErrorView(state.error)
-        }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getEverythingPagingData().collect { pagingData ->
@@ -107,20 +120,55 @@ class MainActivity : AppCompatActivity(), HeadlineAdapter.HeadlineItemClickListe
                 }
             }
         }
+
+        everythingPagingAdapter.addLoadStateListener { loadState ->
+            val state = loadState.refresh
+            showShimmerEverythingLoading(state is LoadState.Loading)
+            if (state is LoadState.Error) {
+                showErrorView(state.error)
+            } else if (everythingPagingAdapter.itemCount == 0 && state is LoadState.NotLoading) {
+                showEmptyResultsError()
+            } else {
+                hideEmptyResultsError()
+            }
+        }
     }
 
-//    private fun showErrorView(error: Throwable) {
-//        when (error) {
-//            is retrofit2.HttpException -> {
-//
-//            }
-//        }
-//    }
+    private fun showEmptyResultsError() {
+        binding.layoutErrorEmpty.isVisible = true
+        binding.rvAllNews.isVisible = false
+        binding.tvErrorEmpty.text = getString(R.string.result_is_empty)
+    }
+
+    private fun hideEmptyResultsError() {
+        binding.layoutErrorEmpty.isVisible = false
+    }
+
+    private fun showErrorView(error: Throwable) {
+        when (error) {
+            is retrofit2.HttpException -> {
+                showEmptyResultsError()
+                binding.tvErrorEmpty.text = error.code().toString()
+            }
+
+            is IOException -> {
+                showEmptyResultsError()
+                binding.tvErrorEmpty.text = getString(R.string.connection_error)
+            }
+
+            else -> {
+                showEmptyResultsError()
+                binding.tvErrorEmpty.text = getString(R.string.server_error)
+            }
+        }
+    }
 
     private fun showShimmerEverythingLoading(isLoading: Boolean) {
         with(binding) {
             includeLoading.loadingShimmerEverything.isVisible = isLoading
             rvAllNews.isVisible = !isLoading
+            layoutErrorEmpty.isVisible = !isLoading
+
             if (isLoading) {
                 includeLoading.loadingShimmerEverything.startShimmer()
             } else if (includeLoading.loadingShimmerEverything.isShimmerStarted) {
@@ -208,7 +256,11 @@ class MainActivity : AppCompatActivity(), HeadlineAdapter.HeadlineItemClickListe
 
     private fun performSearch() {
         val searchQuery = binding.etSearch.text.toString().trim()
-        viewModel.searchQuery = searchQuery
+        if (searchQuery.isEmpty()){
+            viewModel.searchQuery = "A"
+        } else {
+            viewModel.searchQuery = searchQuery
+        }
         observeEverything()
     }
 

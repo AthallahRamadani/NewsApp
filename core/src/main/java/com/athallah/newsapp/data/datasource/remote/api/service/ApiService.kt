@@ -1,6 +1,5 @@
 package com.athallah.newsapp.data.datasource.remote.api.service
 
-import com.athallah.core.BuildConfig
 import com.athallah.newsapp.data.datasource.remote.api.response.EverythingResponse
 import com.athallah.newsapp.data.datasource.remote.api.response.HeadlineResponse
 import com.athallah.newsapp.data.utils.Constant.Companion.API_KEY
